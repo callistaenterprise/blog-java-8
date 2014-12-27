@@ -30,7 +30,8 @@ public class FunctionalImpl1 implements QueryApi {
             .flatMap(o -> o.getOrderLines().stream())
             .map(ol -> ol.getProduct())
             .filter(p -> p.getCategory().equals(category))
-            .sorted((p1, p2) -> (p1.getWeight() < p2.getWeight()) ? -1 : 1)
+            .distinct()
+            .sorted((p1, p2) -> (p1.getWeight() < p2.getWeight()) ? -1 : ((p1.getWeight() == p2.getWeight()) ? 0 : 1))
             .collect(Collectors.toList());
     }
 
@@ -41,7 +42,8 @@ public class FunctionalImpl1 implements QueryApi {
             .flatMap(o -> o.getOrderLines().stream())
             .map(ol -> ol.getProduct())
             .filter(p -> minProductWeight <= p.getWeight() && p.getWeight() <= maxProductWeight)
-            .sorted((p1, p2) -> ((p1.getId() < p2.getId()) ? -1 : 1))
+            .distinct()
+            .sorted((p1, p2) -> (p1.getId() < p2.getId()) ? -1 : ((p1.getId() == p2.getId()) ? 0 : 1))
             .collect(Collectors.toList());
     }
 

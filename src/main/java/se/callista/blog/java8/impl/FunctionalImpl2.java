@@ -30,7 +30,7 @@ public class FunctionalImpl2 implements QueryApi {
         return getProducts(
                 o -> o.getOrderDate().isAfter(minDate) && o.getOrderDate().isBefore(maxDate),
                 p -> p.getCategory().equals(category),
-                (p1, p2) -> (p1.getWeight() < p2.getWeight()) ? -1 : 1);
+                (p1, p2) -> ((p1.getWeight() < p2.getWeight()) ? -1 : ((p1.getWeight() == p2.getWeight()) ? 0 : 1)));
     }
 
     public List<Product> getProductsByOrderValueAndWeightOrderByProductId(int minOrderValue, int maxOrderValue, int minProductWeight, int maxProductWeight) {
@@ -38,7 +38,7 @@ public class FunctionalImpl2 implements QueryApi {
         return getProducts(
             o -> minOrderValue <= o.getOrderValue() && o.getOrderValue() <= maxOrderValue,
             p -> minProductWeight <= p.getWeight() && p.getWeight() <= maxProductWeight,
-            (p1, p2) -> ((p1.getId() < p2.getId()) ? -1 : 1));
+            (p1, p2) -> ((p1.getId() < p2.getId()) ? -1 : ((p1.getId() == p2.getId()) ? 0 : 1)));
     }
 
     private List<Product> getProducts(Predicate<Order> orderFilter, Predicate<Product> productFilter, Comparator<Product> productComparator) {
@@ -48,6 +48,7 @@ public class FunctionalImpl2 implements QueryApi {
             .flatMap(o -> o.getOrderLines().stream())
             .map(ol -> ol.getProduct())
             .filter(productFilter)
+            .distinct()
             .sorted(productComparator)
             .collect(Collectors.toList());
     }

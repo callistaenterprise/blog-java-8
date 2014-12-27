@@ -11,8 +11,7 @@ import se.callista.blog.java8.model.OrderLine;
 import se.callista.blog.java8.model.Product;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -46,7 +45,6 @@ public class Application {
 
         String d;
         List<Product> products = impl.getProductsByDateAndCategoryOrderByWeight(today.minusDays(30), today, "C1");
-
         LOG.info("Count #1: {}, categories: {} - {}",
             products.size(),
             products.stream().map(p -> p.getCategory()).min(String.CASE_INSENSITIVE_ORDER).get(),
@@ -67,7 +65,7 @@ public class Application {
         // Create orders
         IntStream
             .range(0, 1000)
-            .forEach(i -> orders.add(getRandomOrder(today)));
+            .forEach(i -> orders.add(getRandomOrder(i, today)));
 
         // Create orderLines and Products
         orders.forEach(o ->
@@ -78,20 +76,29 @@ public class Application {
         return orders;
     };
 
-    private Order getRandomOrder(LocalDate today) {
+    private Order getRandomOrder(int i, LocalDate today) {
         int daysSinceOrderCreated = getRandomValue(1,100);
         int orderValue = getRandomValue(500, 5000);
-        return new Order(today.minusDays(daysSinceOrderCreated), orderValue);
+        return new Order(i, today.minusDays(daysSinceOrderCreated), orderValue);
     }
 
     private int getRandomNoOfOrderLines() {
         return getRandomValue(2,6);
     }
 
+    private Map<Integer, Product> products = new HashMap<>();
     private Product getRandomProduct() {
-        int productId = getRandomValue(10000, 20000);
+        int productId = getRandomValue(1000, 2000);
+
+        // First check if we already have created the product
+        Product product = products.get(productId);
+        if (product != null) return product;
+
+        // Noop, let's create it and store it before we return it
         int weight = getRandomValue(50, 500);
-        return new Product(productId, "ID-" + productId, weight, "C" + getRandomValue(1,9));
+        product = new Product(productId, "ID-" + productId, weight, "C" + getRandomValue(1,9));
+        products.put(productId, product);
+        return product;
     }
 
     private int getRandomValue(int min, int max) {
@@ -103,6 +110,7 @@ public class Application {
         List<Product> products = orders.stream()
             .flatMap(o -> o.getOrderLines().stream())
             .map(ol -> ol.getProduct())
+            .distinct()
             .collect(Collectors.toList());
 
         LOG.info("Test with {} orders and {} products, product categories: {} - {}, product weights: {} - {}",

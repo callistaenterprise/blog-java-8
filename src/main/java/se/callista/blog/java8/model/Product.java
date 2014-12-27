@@ -32,4 +32,15 @@ public class Product {
         return weight;
     }
 
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Product)) return false;
+        if (obj == this) return true;
+        return id == ((Product)obj).getId();
+    }
 }

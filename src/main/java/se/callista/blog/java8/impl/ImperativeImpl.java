@@ -8,10 +8,7 @@ import se.callista.blog.java8.model.OrderLine;
 import se.callista.blog.java8.model.Product;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by magnus on 21/12/14.
@@ -50,11 +47,14 @@ public class ImperativeImpl implements QueryApi {
             }
         }
 
+        // Remove any duplicates form the list of selected products
+        products = new ArrayList<>(new HashSet<>(products));
+
         // Sort on product weight
         Collections.sort(products, new Comparator<Product>() {
             @Override
             public int compare(Product p1, Product p2) {
-                return (p1.getWeight() < p2.getWeight()) ? -1 : 1;
+                return (p1.getWeight() < p2.getWeight()) ? -1 : ((p1.getWeight() == p2.getWeight()) ? 0 : 1);
             }
         });
 
@@ -85,11 +85,14 @@ public class ImperativeImpl implements QueryApi {
             }
         }
 
+        // Remove any duplicates form the list of selected products
+        products = new ArrayList<>(new HashSet<>(products));
+
         // Sort on product Id
         Collections.sort(products, new Comparator<Product>() {
             @Override
             public int compare(Product p1, Product p2) {
-                return (p1.getId() < p2.getId()) ? -1 : 1;
+                return (p1.getId() < p2.getId()) ? -1 : ((p1.getId() == p2.getId()) ? 0 : 1);
             }
         });
 
