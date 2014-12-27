@@ -47,7 +47,7 @@ public class ImperativeImpl implements QueryApi {
             }
         }
 
-        // Remove any duplicates form the list of selected products
+        // Remove any duplicates from the list of selected products
         products = new ArrayList<>(new HashSet<>(products));
 
         // Sort on product weight
@@ -85,7 +85,7 @@ public class ImperativeImpl implements QueryApi {
             }
         }
 
-        // Remove any duplicates form the list of selected products
+        // Remove any duplicates from the list of selected products
         products = new ArrayList<>(new HashSet<>(products));
 
         // Sort on product Id
