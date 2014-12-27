@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+mainClassName = "se.callista.blog.java8.Application"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-logging:1.1.1.RELEASE")
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}
